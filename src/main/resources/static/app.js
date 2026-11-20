@@ -30,11 +30,15 @@ async function createStudent(studentData) {
 document.getElementById("studentForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
+    if (!validateStudentForm()) {
+        return;
+    }
+
     const id = document.getElementById("studentId").value;
     const studentData = {
-        firstName: document.getElementById("firstName").value,
-        lastName: document.getElementById("lastName").value,
-        email: document.getElementById("email").value
+        firstName: document.getElementById("firstName").value.trim(),
+        lastName: document.getElementById("lastName").value.trim(),
+        email: document.getElementById("email").value.trim()
     };
     createStudent(studentData);
 })
