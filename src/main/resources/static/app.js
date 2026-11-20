@@ -74,11 +74,6 @@ async function getAllStudents() {
             }
         );
 
-        if (response.status === 401 || response.status === 403) {
-            await loginUser();
-            return;
-        }
-
         if (!response.ok) throw new Error("Network response was NOT ok.");
 
         const students = await response.json();
