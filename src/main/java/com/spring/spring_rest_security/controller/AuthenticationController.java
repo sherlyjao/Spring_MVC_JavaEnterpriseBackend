@@ -157,6 +157,14 @@ public class AuthenticationController {
         );
     }
 
+    /**
+     * Authenticates user credentials and establishes an HTTP session with
+     * the Spring Security context.
+     *
+     * @param authLoginDto the DTO containing user login credentials
+     * @param request      the incoming HTTP request used to create a session
+     * @return a {@link ResponseEntity} containing a confirmation message
+     */
     @PostMapping("/auth_login_session")
     public ResponseEntity<?> loginWithSession(
         @RequestBody AuthLoginDto authLoginDto, 
@@ -177,10 +185,21 @@ public class AuthenticationController {
         );
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Authenticated successfully via session cookie.");
+        response.put(
+            "message", 
+        "Authenticated successfully via session cookie."
+        );
+        
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Invalidates the active HTTP session and clears the security context
+     * to log out the current user.
+     *
+     * @param request the incoming HTTP request containing the current session
+     * @return a {@link ResponseEntity} with an unauthorized status and message
+     */
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
