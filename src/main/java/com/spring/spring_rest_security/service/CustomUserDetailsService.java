@@ -1,65 +1,65 @@
-// package com.spring.spring_rest_security.service;
+package com.spring.spring_rest_security.service;
 
-// import java.util.Collection;
-// import java.util.List;
-// import java.util.stream.Collectors;
-// import org.springframework.security.core.GrantedAuthority;
-// import org.springframework.security.core.authority.SimpleGrantedAuthority;
-// import org.springframework.security.core.userdetails.User;
-// import org.springframework.security.core.userdetails.UserDetails;
-// import org.springframework.security.core.userdetails.UserDetailsService;
-// import org.springframework.security.core.userdetails.UsernameNotFoundException;
-// import org.springframework.stereotype.Service;
-// import com.spring.spring_rest_security.entity.Auth_Role;
-// import com.spring.spring_rest_security.entity.Auth_User;
-// import com.spring.spring_rest_security.repository.AuthUserRepository;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import com.spring.spring_rest_security.entity.Auth_Role;
+import com.spring.spring_rest_security.entity.Auth_User;
+import com.spring.spring_rest_security.repository.AuthUserRepository;
 
-// /** 
-//  * CustomUserDetailsService
-//  */
-// @Service 
-// public class CustomUserDetailsService implements UserDetailsService {
+/** 
+ * CustomUserDetailsService
+ */
+@Service 
+public class CustomUserDetailsService implements UserDetailsService {
 
-//     private final AuthUserRepository authUserRepo;
-
-
-//     public CustomUserDetailsService(AuthUserRepository authUserRepo) {
-//         this.authUserRepo = authUserRepo;
-//     }
+    private final AuthUserRepository authUserRepo;
 
 
-//     public UserDetails loadUserByUsername(String theUsername) {
-//         Auth_User user = authUserRepo
-//             .findByUsername(theUsername)
-//             .orElseThrow(
-//                 () -> new UsernameNotFoundException(
-//                     "Username " + theUsername + " does not exist!"
-//                 )
-//             );
+    public CustomUserDetailsService(AuthUserRepository authUserRepo) {
+        this.authUserRepo = authUserRepo;
+    }
 
-//         return new User(
-//             user.getUsername(),
-//             user.getPassword(),
-//             mapRolestoAuthorities(user.getRoles())
-//         );
-//     }
 
-//     /**
-//      * Maps a list of user roles to a collection of Spring Security granted
-//      * authorities.
-//      *
-//      * @param roles the list of {@link Auth_Role} entities assigned to the user
-//      * @return a collection of objects representing roles
-//      */
-//     private Collection<GrantedAuthority> mapRolestoAuthorities(
-//         List<Auth_Role> roles
-//     ) {
+    public UserDetails loadUserByUsername(String theUsername) {
+        Auth_User user = authUserRepo
+            .findByUsername(theUsername)
+            .orElseThrow(
+                () -> new UsernameNotFoundException(
+                    "Username " + theUsername + " does not exist!"
+                )
+            );
+
+        return new User(
+            user.getUsername(),
+            user.getPassword(),
+            mapRolestoAuthorities(user.getRoles())
+        );
+    }
+
+    /**
+     * Maps a list of user roles to a collection of Spring Security granted
+     * authorities.
+     *
+     * @param roles the list of {@link Auth_Role} entities assigned to the user
+     * @return a collection of objects representing roles
+     */
+    private Collection<GrantedAuthority> mapRolestoAuthorities(
+        List<Auth_Role> roles
+    ) {
         
-//         return roles
-//             .stream()
-//             .map(
-//                 role -> new SimpleGrantedAuthority(role.getName())
-//             )
-//             .collect(Collectors.toList());
-//     }
-// }
+        return roles
+            .stream()
+            .map(
+                role -> new SimpleGrantedAuthority(role.getName())
+            )
+            .collect(Collectors.toList());
+    }
+}

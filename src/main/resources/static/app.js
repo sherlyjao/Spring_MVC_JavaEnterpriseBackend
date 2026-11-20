@@ -1,4 +1,5 @@
 const API_URL = "http://localhost:8080/api/students";
+const API_AUTH = "http://localhost:8080/api/auth";
 
 //create a student
 async function createStudent(studentData) {
@@ -10,7 +11,8 @@ async function createStudent(studentData) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(studentData)
+                body: JSON.stringify(studentData),
+                credentials: "include"
             }
         );
 
@@ -64,7 +66,18 @@ function resetBtn() {
 //get student function
 async function getAllStudents() {
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(
+            API_URL,
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
+
+        if (response.status === 401 || response.status === 403) {
+            await loginUser();
+            return;
+        }
 
         if (!response.ok) throw new Error("Network response was NOT ok.");
 
@@ -113,7 +126,12 @@ document.addEventListener("DOMContentLoaded", getAllStudents);
 //get id student details to form function
 async function initializeStudentFormById(id) {
     try {
-        const response = await fetch(`${API_URL}/${id}`);
+        const response = await fetch(
+            `${API_URL}/${id}`,
+            {
+                credentials: "include"
+            }
+        );
 
         if (!response.ok) throw new Error("Could not fetch student details.");
 
@@ -145,7 +163,8 @@ async function updateStudent(id, studentData) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(studentData)
+                body: JSON.stringify(studentData),
+                credentials: "include"
             }
         );
 
@@ -171,6 +190,7 @@ async function deleteStudent(id) {
                 `${API_URL}/${id}`,
                 {
                     method: "DELETE",
+                    credentials: "include"
                 }
             );
 
@@ -185,5 +205,64 @@ async function deleteStudent(id) {
         } catch (error) {
             console.error("Error deleting student: ", error);
         }
+    }
+}
+
+async function loginUser(loginDto) {
+    try {
+        const response = await fetch(
+            `${API_AUTH}/auth_login_session`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(loginDto),
+                credentials: "include"
+            }
+        );    
+
+        if (response.ok) {
+            alert("Login successful!");
+            window.location.href = "index.html";
+        } else {
+            alert("Invalid credentials.")
+        }
+    } catch (error) {
+        console.error("Login error: ", error);
+    }
+}
+
+async function logoutUser() {
+    try {
+        await fetch(
+            `${API_AUTH}/logout`,
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+        document.getElementById("studentTableBody").innerHTML = "";
+        resetForm();
+        alert("Logged out successfully!");
+
+        try {
+            await fetch(
+                API_URL,
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Basic " + btoa("invalid_user:wrong_password")
+                    }
+                }
+            )
+        } catch (err) {
+            console.log("Browser credential cache cleared.")
+        }
+
+        window.location.reload();
+    } catch (error) {
+        console.error("Logout transmission crash: ", error);
     }
 }
