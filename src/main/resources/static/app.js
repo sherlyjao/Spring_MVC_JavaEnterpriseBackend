@@ -17,6 +17,7 @@ async function createStudent(studentData) {
         if (response.ok) {
             alert("Student added successfully!");
             resetForm();
+            getAllStudents();
         } else {
             alert("Error adding student.");
         }
@@ -40,11 +41,149 @@ document.getElementById("studentForm").addEventListener("submit", function(e) {
         lastName: document.getElementById("lastName").value.trim(),
         email: document.getElementById("email").value.trim()
     };
-    createStudent(studentData);
+    
+    if (id) {
+        updateStudent(id, studentData);
+    } else {
+        createStudent(studentData);
+    }
 })
 
 //Helper functions to clear form
 function resetForm() {
     document.getElementById("studentId").value = "";
     document.getElementById("studentForm").reset();
+}
+
+function resetBtn() {
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.textContent = "Add Student";
+    submitBtn.style.backgroundColor = "#28a745";
+}
+
+//get student function
+async function getAllStudents() {
+    try {
+        const response = await fetch(API_URL);
+
+        if (!response.ok) throw new Error("Network response was NOT ok.");
+
+        const students = await response.json();
+        const tableBody = document.getElementById("studentTableBody");
+        tableBody.innerHTML = "";
+
+        students.forEach(student => {
+            const row = `
+                <tr>
+                    <td>${student.id}</td>
+                    <td>${student.firstName}</td>
+                    <td>${student.lastName}</td>
+                    <td>${student.email}</td>
+                    <td>
+                        <button 
+                            class="btn-edit" 
+                            onclick="initializeStudentFormById(${student.id})"
+                        >
+                            Edit
+                        </button>
+
+                        <button 
+                            class="btn-delete" 
+                            onclick="deleteStudent(${student.id})"
+                        >
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+            tableBody.innerHTML += row;
+        });
+
+    } catch (error) {
+        console.log("Error fetching students: ", error);
+        alert("Failed to fetch students."
+            + " Is your Spring Boot backend running?");
+    }
+}
+
+//get student event listener
+document.addEventListener("DOMContentLoaded", getAllStudents);
+
+//get id student details to form function
+async function initializeStudentFormById(id) {
+    try {
+        const response = await fetch(`${API_URL}/${id}`);
+
+        if (!response.ok) throw new Error("Could not fetch student details.");
+
+        const student = await response.json();
+
+        document.getElementById("studentId").value = student.id;
+        document.getElementById("firstName").value = student.firstName;
+        document.getElementById("lastName").value = student.lastName;
+        document.getElementById("email").value = student.email;
+
+        //button change on edit
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.textContent = "Update";
+        submitBtn.style.backgroundColor = "#007bff";
+
+        clearValidationStyle();
+    } catch (error) {
+        console.error("Error fetching student details: ", error);
+    }
+}
+
+//update a student
+async function updateStudent(id, studentData) {
+    try {
+        const response = await fetch(
+            `${API_URL}/${id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(studentData)
+            }
+        );
+
+        if (response.ok) {
+            alert("Student updated successfully!");
+            resetForm();
+            resetBtn();
+            getAllStudents();
+        } else {
+            alert("Error adding student.");
+        }
+
+    } catch (error) {
+        console.error("Error creating student:", error);
+    }
+}
+
+//delete a student function
+async function deleteStudent(id) {
+    if (confirm("Are you sure you want to delete this student?")) {
+        try {
+             const response = await fetch(
+                `${API_URL}/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+
+            if (response.ok) {
+                const message = await response.text();
+                alert(message);
+                getAllStudents();
+            } else {
+                alert("Error deleting student.")
+            }
+
+        } catch (error) {
+            console.error("Error deleting student: ", error);
+        }
+    }
 }
