@@ -60,7 +60,7 @@ function resetForm() {
 function resetBtn() {
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.textContent = "Add Student";
-    submitBtn.style.backgroundColor = "#28a745";
+    submitBtn.style.backgroundColor = "#4f772d";
 }
 
 //get student function
@@ -145,7 +145,7 @@ async function initializeStudentFormById(id) {
         //button change on edit
         const submitBtn = document.getElementById("submitBtn");
         submitBtn.textContent = "Update";
-        submitBtn.style.backgroundColor = "#007bff";
+        submitBtn.style.backgroundColor = "#118ab2";
 
         clearValidationStyle();
     } catch (error) {
