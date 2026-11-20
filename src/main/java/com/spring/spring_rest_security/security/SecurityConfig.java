@@ -1,6 +1,5 @@
 package com.spring.spring_rest_security.security;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
@@ -48,6 +47,7 @@ public class SecurityConfig {
     }
 
 
+    @SuppressWarnings("null")
     @Bean 
     SecurityFilterChain filterChain(HttpSecurity security) 
         throws Exception {

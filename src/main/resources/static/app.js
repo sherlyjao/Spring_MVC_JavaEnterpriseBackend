@@ -253,7 +253,8 @@ async function logoutUser() {
                 {
                     method: "GET",
                     headers: {
-                        "Authorization": "Basic " + btoa("invalid_user:wrong_password")
+                        "Authorization": "Basic " 
+                        + btoa("invalid_user:wrong_password")
                     }
                 }
             )

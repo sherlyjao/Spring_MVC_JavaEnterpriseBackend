@@ -23,7 +23,6 @@ import com.spring.spring_rest_security.entity.Auth_User;
 import com.spring.spring_rest_security.repository.AuthRoleRepository;
 import com.spring.spring_rest_security.repository.AuthUserRepository;
 
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
