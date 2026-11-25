@@ -62,7 +62,8 @@ public class SecurityConfig {
                     auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/students/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/api/students/**")
+                        .hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

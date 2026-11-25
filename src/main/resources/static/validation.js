@@ -1,3 +1,11 @@
+/**
+ * Validates the student form fields (`firstName`, `lastName`, and `email`),
+ * updates inline error messages and `.invalid` classes, and returns whether
+ * all checks pass.
+ *
+ * @function validateStudentForm
+ * @returns {boolean} `true` if all form fields are valid, otherwise `false`.
+ */
 function validateStudentForm() {
     let isValid = true;
 
@@ -55,6 +63,13 @@ function validateStudentForm() {
     return isValid;
 }
 
+/**
+ * Removes the `.invalid` class and clears error text for `firstName`,
+ * `lastName`, and `email` fields when their DOM elements exist.
+ *
+ * @function clearValidationStyle
+ * @returns {void}
+ */
 function clearValidationStyle() {
     const fields = ["firstName", "lastName", "email"];
     
